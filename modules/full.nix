@@ -1,11 +1,13 @@
 { config, lib, pkgs, ... }: {
 
   services.nix-daemon.enable = true;
+  services.emacs.enable = true;
   security.pam.enableSudoTouchIdAuth = true;
 
   environment.systemPackages = with pkgs; [
+    emacs
     cachix # nix caching
-    alacritty
+    # alacritty
     jq # A lightweight and flexible command-line JSON processor
     fd # A simple, fast and user-friendly alternative to find
     direnv # A shell extension that manages your environment

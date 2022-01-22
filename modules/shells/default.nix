@@ -14,10 +14,10 @@
     sudo chsh -s ${lib.getBin pkgs.fish}/bin/fish jobo
   '';
 
-   programs.fish.shellAliases = with pkgs; {
+  programs.fish.shellAliases = with pkgs; {
     ":q" = "exit";
-    vi = "emacsclient -c";
-    git-rebsae = "git rebase -i HEAD~2";
+    e = "emacsclient -c";
+    vim = "nvim";
     ll =
       "exa -lF --color-scale --no-user --no-time --no-permissions --group-directories-first --icons -a";
     ls = "exa -lF --group-directories-first --icons -a";
@@ -30,7 +30,6 @@
     calc = "emacs -f full-calc";
     nix-fish = "nix-shell --command fish";
   };
-
 
   programs.fish.promptInit = ''
     set -g fish_greeting ""
@@ -120,30 +119,118 @@
 
       fzf_key_bindings
     end
+
+   function fish_default_key_bindings -d "Emacs like key bindings for fish"
+
+     # Clear earlier bindings, if any
+     bind --erase --all
+
+     # This is the default binding, i.e. the one used if no other binding matches
+     bind "" self-insert
+
+     bind \e\n "commandline -i \n"
+
+
+ 	  bind \eu upcase-word
+	  # This clashes with __fish_list_current_token
+	  # bind \el downcase-word
+  	bind \ec capitalize-word
+  	bind -k ppage beginning-of-history
+  	bind -k npage end-of-history
+  	bind \e\< beginning-of-buffer
+	  bind \e\> end-of-buffer
+
+  	bind \ew 'set tok (commandline -pt); if test $tok[1]; echo; whatis $tok[1]; commandline -f repaint; end'
+  	bind \cl 'clear; commandline -f repaint'
+	  bind \cc 'commandline ""'
+  	bind \cu backward-kill-line
+	  bind \ed kill-word
+  	bind \cw backward-kill-path-component
+	  bind \ed 'set -l cmd (commandline); if test -z "$cmd"; echo; dirh; commandline -f repaint; else; commandline -f kill-word; end'
+  	bind \cd delete-or-exit
+
+	  # This will make sure the output of the current command is paged using the less pager when you press Meta-p
+  	bind \ep '__fish_paginate'
+
+
+  	# emacs bindings
+
+  	bind \eu backward-word
+	  bind \eo forward-word
+
+  	bind \el forward-char
+  	bind \ej backward-char
+  	bind \ei up-or-search
+	  bind \ek down-or-search
+
+	  bind -k right forward-char
+  	bind -k left backward-char
+  	bind -k down down-or-search
+	  bind -k up up-or-search
+  	bind [C forward-char
+  	bind [D backward-char
+  	bind [B down-or-search
+	  bind [A up-or-search
+
+  	bind \er kill-word
+	  bind \ee backward-kill-word
+  	bind \ed backward-delete-char
+	  bind \ef delete-char
+
+  	bind -k btab backward-delete-char
+	  bind -k backspace backward-delete-char
+  	bind \x7f backward-delete-char
+	  bind -k dc delete-char
+
+  	bind \eh beginning-of-line
+	  bind \eH end-of-line
+
+  	bind \eg backward-kill-line
+	  bind \eG kill-line
+
+  	bind \ec yank-pop
+	  bind \ev yank
+
+  	bind \cj complete
+	  bind \cM execute
+  	bind -k enter execute
+
+
+
+  	# TODO: still unbound
+	  # __fish_list_current_token
+  	# transpose-chars
+	  # transpose-words
+	  # history-search-backward
+  	# history-search-forward
+	  # history-token-search-forward
+  	# history-token-search-backward
+	  # nextd-or-forward-word
+ 	  # prevd-or-backward-word
+	end
   '';
 
   programs.fish.interactiveShellInit = ''
-   set -g fish_greeting ""
-    if not set -q TMUX
-      tmux new-session -A -s main
-    end
-    zoxide init fish --cmd cd | source
-    set -x EDITOR "nvim"
-    set -x PATH ~/.config/emacs/bin $PATH
+    set -g fish_greeting ""
+     if not set -q TMUX
+       tmux new-session -A -s main
+     end
+     zoxide init fish --cmd cd | source
+     set -x EDITOR "emacs"
+     set -x PATH ~/.ghcup/bin ~/.local/bin $PATH
 
   '';
 
-   home-manager.users.jobo.programs.bat = {
-     enable = true;
-     config = { theme = "Nord"; };
-   };
-
+  home-manager.users.jobo.programs.bat = {
+    enable = true;
+    config = { theme = "Nord"; };
+  };
 
   programs.tmux.enable = true;
   programs.tmux.extraConfig = ''
     # make sure fish works in tmux
     set -g default-terminal "screen-256color"
-    set -sa terminal-overrides ',xterm-256color:RGB'
+    set -sa terminal-overirdes ',xterm-256color:RGB'
     # so that escapes register immidiately in vim
     set -sg escape-time 1
     set -g focus-events on
@@ -177,6 +264,5 @@
     set -g window-status-format "#[fg=magenta]#[fg=black]#[bg=magenta]#I #[bg=brightblack]#[fg=white] #W#[fg=brightblack]#[bg=default] "
   '';
 
-
-  environment.systemPackages = with pkgs; [ exa neofetch fzf ];
+  environment.systemPackages = with pkgs; [ exa neofetch fzf mosh ];
 }

@@ -2,20 +2,6 @@
 
 {
 
-  # yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^Karabiner-Elements$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^Karabiner-EventViewer$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^Keka$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^System Information$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="^Activity Monitor$" sticky=on layer=above manage=off
-  # yabai -m rule --add app="Fantastical" manage=off
-  # yabai -m rule --add app="^Spotify$" manage=off
-  # yabai -m rule --add app="^Calendar$" manage=off
-  # yabai -m rule --add app="^Slack$" manage=off
-  # yabai -m rule --add app="^Discord$" manage=off
-  # yabai -m rule --add app="^Mail$" manage=off
 
   services.yabai = {
     enable = true;
@@ -24,9 +10,6 @@
     package = pkgs.yabai;
     config = {
       window_border = "off";
-      # window_border_width = 5;
-      # active_window_border_color = "0xff3B4252";
-      # normal_window_border_color = "0xff2E3440";
       focus_follows_mouse = "autoraise";
       mouse_follows_focus = "off";
       mouse_drop_action = "stack";
@@ -48,88 +31,87 @@
       right_padding = 18;
       window_gap = 18;
     };
+    extraConfig = ''
+      # rules
+
+      # yabai -m rule --add label="App Store" app="^App Store$" manage=off
+      # yabai -m rule --add label="Activity Monitor" app="^Activity Monitor$" manage=off
+      # yabai -m rule --add label="Calculator" app="^Calculator$" manage=off
+      # yabai -m rule --add label="Dictionary" app="^Dictionary$" manage=off
+      # yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
+      # yabai -m rule --add app="^System Preferences$" sticky=on layer=above manage=off
+      # yabai -m rule --add app="^Finder$" sticky=on layer=above manage=off
+      # yabai -m rule --add app="^Keka$" sticky=on layer=above manage=off
+      # yabai -m rule --add app="^Disk Utility$" sticky=on layer=above manage=off
+      # yabai -m rule --add app="^Spotify$" manage=off
+      # yabai -m rule --add app="^Calendar$" manage=off
+      # yabai -m rule --add app="^emacs$" manage=on
+      # yabai -m rule --add app="^Books$" manage=off layer=above
+
+
+      # yabai -m rule --add app="^Slack$" manage=off
+      # yabai -m rule --add app="^Discord$" manage=off
+      # yabai -m rule --add app="^Mail$" manage=off sticky=on
+    '';
   };
-
-  # ## Close active application
-  # hyper - delete : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
-
-  # ## open terminal
-  # hyper - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
-
-  # ## swap window - colemak mapping
-  # # shift + alt + ctrl - o : yabai -m window --swap west
-  # # shift + alt + ctrl - e : yabai -m window --swap south
-  # # shift + alt + ctrl - i : yabai -m window --swap north
-  # # shift + alt + ctrl - n : yabai -m window --swap east
-
-  # ## Focus app -  colemak mapping
-  # shift + alt + ctrl - o : yabai -m window --focus east
-  # shift + alt + ctrl - e : yabai -m window --focus south
-  # shift + alt + ctrl - i : yabai -m window --focus north
-  # shift + alt + ctrl - n : yabai -m window --focus west
-
-  # ## rotate tree 90
-  # hyper - r : yabai -m space --rotate 90
-
-  # ## flip the tree vertically
-  # hyper - 4 : yabai -m space --mirror y-axis
-  # # mirror tree y-axis
-  # #alt - y : yabai -m space --mirror y-axis
-  # ## mirror tree x-axis
-  # #alt - x : yabai -m space --mirror x-axis
-
-  # #Move active window to next space on current display
-  # shift + lalt + lcmd + ctrl + ralt - 1 : yabai -m query --spaces --space | jq -re ".index" | xargs -I {} bash -c "if [[ '{}' = '1' ]]; then yabai -m window --space 2; elif [[ '{}' = '2' ]]; then yabai -m window --space 1; fi"
-  # shift + lalt + lcmd + ctrl + ralt - 2 : yabai -m query --spaces --space | jq -re ".index" | xargs -I {} bash -c "if [[ '{}' = '3' ]]; then yabai -m window --space 4; elif [[ '{}' = '4' ]]; then yabai -m window --space 3; fi"
-  # shift + lalt + lcmd + ctrl + ralt - 3 : yabai -m query --spaces --space | jq -re ".index" | xargs -I {} bash -c "if [[ '{}' = '5' ]]; then yabai -m window --space 6; elif [[ '{}' = '6' ]]; then yabai -m window --space 5; fi"
-
-  # ## fast focus desktop
-  # shift + alt + ctrl - x : yabai -m space --focus last
-  # shift + alt + ctrl - z : yabai -m space --focus prev
-  # shift + alt + ctrl - c : yabai -m space --focus next
-  # shift + alt + ctrl - 1 : yabai -m space --focus 1
-  # shift + alt + ctrl - 2 : yabai -m space --focus 2
-  # shift + alt + ctrl - 3 : yabai -m space --focus 3
-  # shift + alt + ctrl - 4 : yabai -m space --focus 4
-  # shift + alt + ctrl - 5 : yabai -m space --focus 5
-  # shift + alt + ctrl - 6 : yabai -m space --focus 6
-  # shift + alt + ctrl - 7 : yabai -m space --focus 7
-  # shift + alt + ctrl - 8 : yabai -m space --focus 8
-  # shift + alt + ctrl - 9 : yabai -m space --focus 9
-
-  # ## toggle window fullscreen zoom
-  # hyper - f : yabai -m window --toggle zoom-fullscreen
 
   services.skhd = {
     enable = true;
     package = pkgs.skhd;
     skhdConfig = ''
-      ## HYPER == SHIFT + CMD + ALT + OPTION
-      ## MEH == SHIFT + ALT + CTRL
-
-      ctrl + alt - h : yabai -m window --focus west
-      ctrl + alt - j : yabai -m window --focus south
-      ctrl + alt - k : yabai -m window --focus north
-      ctrl + alt - l : yabai -m window --focus east
-      # Fill space with window
-      ctrl + alt - 0 : yabai -m window --grid 1:1:0:0:1:1
-      # Move window
-      ctrl + alt - f : yabai -m window --space next; yabai -m space --focus next
-      ctrl + alt - s : yabai -m window --space prev; yabai -m space --focus prev
-      # Close current window
-      ctrl + alt - w : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
-      # Rotate tree
-      ctrl + alt - r : yabai -m space --rotate 90
-      # Open application
-      # ctrl + alt - enter : alacritty
+      # open terminal
       cmd - return : alacritty
-      ctrl + alt - e : emacs
-      ctrl + alt - b : open -a Safari
-      ctrl + alt - t : yabai -m window --toggle float;\
-        yabai -m window --grid 4:4:1:1:2:2
-      ctrl + alt - p : yabai -m window --toggle sticky;\
-        yabai -m window --toggle topmost;\
-        yabai -m window --toggle pip
+
+      # open emacs
+      cmd - e : emacsclient -c
+      cmd + shift -e : emacsclient --eval "(emacs-everywhere)"
+
+
+      # open browser
+      cmd - b : open -a Chrome
+
+
+      # colemak home row
+      lalt - n : yabai -m window --focus west
+      lalt - e : yabai -m window --focus south
+      lalt - i : yabai -m window --focus north
+      lalt - o : yabai -m window --focus east
+
+
+      # focus spaces
+      cmd + ctrl - x : yabai -m space --focus recent
+      cmd - 1 : yabai -m space --focus 1
+      cmd - 2 : yabai -m space --focus 2
+      cmd - 3 : yabai -m space --focus 3
+      cmd - 4 : yabai -m space --focus 4
+      cmd - 5 : yabai -m space --focus 5
+      cmd - 6 : yabai -m space --focus 6
+      cmd - 7 : yabai -m space --focus 7
+      cmd - 8 : yabai -m space --focus 8
+
+      # focus on next/prev space
+      ctrl + alt - q : yabai -m space --focus prev
+      ctrl + alt - f : yabai -m space --focus next
+      ctrl + alt - x : yabai -m space --focus last
+
+      # rotate tree
+      ctrl + alt - r : yabai -m space --rotate 90
+
+      # float / unfloat window and center on screen
+      lalt - t : yabai -m window --toggle float;\
+                 yabai -m window --grid 4:4:1:1:2:2
+
+      # toggle window fullscreen
+      ralt - yabai : f -m window --toggle zoom-fullscreen
+
+      # move window
+      # ctrl + alt - f : yabai -m window --space next; yabai -m space --focus next
+      # ctrl + alt - s : yabai -m window --space prev; yabai -m space --focus prev
+
+
+      # close current window
+      # ctrl + alt - w : $(yabai -m window $(yabai -m query --windows --window | jq -re ".id") --close)
+
     '';
 
   };
@@ -171,6 +153,15 @@
     enableKeyMapping = true;
     remapCapsLockToEscape = true;
   };
+
+  # services.kmonad = {
+  #   enable = true;
+  #   configfiles  = [
+
+  #     #  -- (builtins.readFile "./mbp13.kbd")
+  #   ];
+  # };
+
   system.defaults = {
     dock = {
       autohide = true;
@@ -188,8 +179,8 @@
       ApplePressAndHoldEnabled = false;
       AppleFontSmoothing = 1;
       _HIHideMenuBar = false;
-      InitialKeyRepeat = 10;
-      KeyRepeat = 2;
+      InitialKeyRepeat = 11; # normal minimum is 15 (225 ms)
+      KeyRepeat = 1; # normal minimum is 2 (30 ms) - 1 = 15 ms
       "com.apple.mouse.tapBehavior" = 1;
     };
   };

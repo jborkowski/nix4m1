@@ -38,15 +38,9 @@
       inputs.nixpkgs.follows = "unstable";
     };
 
-    # emacs-overlay = {
-    #   url =
-    #     "github:nix-community/emacs-overlay/";
-    #   inputs.nixpkgs.follows = "unstable";
-    # };
-
-    emacs = {
-      url = "github:shaunsingh/emacs";
-      inputs.nixpkgs.follows = "unstable";
+    emacs-src = {
+      url = "github:emacs-mirror/emacs";
+      flake = false;
     };
 
     doom-emacs = {
@@ -60,13 +54,24 @@
     };
 
     yabai-src = {
-      url = "github:koekeishiya/yabai";
+      url = "github:koekeishiya/yabai/master";
       flake = false;
+    };
+
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.nixpkgs.follows = "unstable";
+    };
+
+    kmonad = {
+      url = "github:kmonad/kmonad?dir=nix";
+      inputs.nixpkgs.follows = "unstable";
+      inputs.flake-utils.follows = "flake-utils";
     };
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, nur, neovim, emacs
-    , doom-emacs, yabai-src, ... }:
+  outputs = { self, nixpkgs, darwin, home-manager, nur, neovim, emacs-src
+    , doom-emacs, yabai-src, kmonad, ... }:
     let
       system = "aarch64-darwin";
 
@@ -81,8 +86,49 @@
           overlays = [
             nur.overlay
             neovim.overlay
-            emacs.overlay
-            (final: prev: { doomEmacsRevision = doom-emacs.rev; })
+            kmonad.overlay
+            (final: prev: {
+              doomEmacsRevision = doom-emacs.rev;
+              emacs = (prev.emacs.override {
+                srcRepo = true;
+                nativeComp = true;
+                withSQLite3 = true;
+                withXwidgets = true;
+              }).overrideAttrs (o: rec {
+                version = "29.0.50";
+                src = emacs-src;
+
+                buildInputs = o.buildInputs ++ [
+                  prev.darwin.apple_sdk.frameworks.WebKit
+                  pkgs.cairo
+                  pkgs.harfbuzz
+                ];
+
+                configureFlags = o.configureFlags ++ [
+                  "--with-rsvg"
+                  "--with-threads"
+                  "--without-gpm"
+                  "--without-dbus"
+                  "--without-mailutils"
+                  "--without-toolkit-scroll-bars"
+                  "--without-pop"
+                ];
+
+                patches = [
+                  ./patches/fix-window-role.patch
+                  # ./patches/no-titlebar.patch
+                ];
+
+                postPatch = o.postPatch + ''
+                  substituteInPlace lisp/loadup.el \
+                  --replace '(emacs-repository-get-branch)' '"master"'
+                '';
+
+                CFLAGS =
+                  "-DMAC_OS_X_VERSION_MAX_ALLOWED=110203 -g -O3 -mtune=native -march=native -fomit-frame-pointer";
+              });
+            })
+
           ];
           config.allowUnfree = true;
         };
@@ -100,6 +146,7 @@
             ./modules/alacritty
             ./modules/pam
             ./modules/git
+            # ./modules/kmonad
             ./modules/mac
             ./modules/fonts
             ./modules/shells

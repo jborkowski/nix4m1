@@ -15,6 +15,8 @@
       use_thin_strokes = true;
       cursor.style = "Beam";
 
+      alt_send_esc = true;
+
       font = {
         size = 14;
         normal.family = "Liga SFMono Nerd Font";
