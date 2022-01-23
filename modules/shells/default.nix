@@ -120,94 +120,6 @@
       fzf_key_bindings
     end
 
-   function fish_default_key_bindings -d "Emacs like key bindings for fish"
-
-     # Clear earlier bindings, if any
-     bind --erase --all
-
-     # This is the default binding, i.e. the one used if no other binding matches
-     bind "" self-insert
-
-     bind \e\n "commandline -i \n"
-
-
- 	  bind \eu upcase-word
-	  # This clashes with __fish_list_current_token
-	  # bind \el downcase-word
-  	bind \ec capitalize-word
-  	bind -k ppage beginning-of-history
-  	bind -k npage end-of-history
-  	bind \e\< beginning-of-buffer
-	  bind \e\> end-of-buffer
-
-  	bind \ew 'set tok (commandline -pt); if test $tok[1]; echo; whatis $tok[1]; commandline -f repaint; end'
-  	bind \cl 'clear; commandline -f repaint'
-	  bind \cc 'commandline ""'
-  	bind \cu backward-kill-line
-	  bind \ed kill-word
-  	bind \cw backward-kill-path-component
-	  bind \ed 'set -l cmd (commandline); if test -z "$cmd"; echo; dirh; commandline -f repaint; else; commandline -f kill-word; end'
-  	bind \cd delete-or-exit
-
-	  # This will make sure the output of the current command is paged using the less pager when you press Meta-p
-  	bind \ep '__fish_paginate'
-
-
-  	# emacs bindings
-
-  	bind \eu backward-word
-	  bind \eo forward-word
-
-  	bind \el forward-char
-  	bind \ej backward-char
-  	bind \ei up-or-search
-	  bind \ek down-or-search
-
-	  bind -k right forward-char
-  	bind -k left backward-char
-  	bind -k down down-or-search
-	  bind -k up up-or-search
-  	bind [C forward-char
-  	bind [D backward-char
-  	bind [B down-or-search
-	  bind [A up-or-search
-
-  	bind \er kill-word
-	  bind \ee backward-kill-word
-  	bind \ed backward-delete-char
-	  bind \ef delete-char
-
-  	bind -k btab backward-delete-char
-	  bind -k backspace backward-delete-char
-  	bind \x7f backward-delete-char
-	  bind -k dc delete-char
-
-  	bind \eh beginning-of-line
-	  bind \eH end-of-line
-
-  	bind \eg backward-kill-line
-	  bind \eG kill-line
-
-  	bind \ec yank-pop
-	  bind \ev yank
-
-  	bind \cj complete
-	  bind \cM execute
-  	bind -k enter execute
-
-
-
-  	# TODO: still unbound
-	  # __fish_list_current_token
-  	# transpose-chars
-	  # transpose-words
-	  # history-search-backward
-  	# history-search-forward
-	  # history-token-search-forward
-  	# history-token-search-backward
-	  # nextd-or-forward-word
- 	  # prevd-or-backward-word
-	end
   '';
 
   programs.fish.interactiveShellInit = ''
@@ -230,7 +142,8 @@
   programs.tmux.extraConfig = ''
     # make sure fish works in tmux
     set -g default-terminal "screen-256color"
-    set -sa terminal-overirdes ',xterm-256color:RGB'
+
+    set -sa terminal-overrides ',xterm-256color:RGB'
     # so that escapes register immidiately in vim
     set -sg escape-time 1
     set -g focus-events on
@@ -242,16 +155,19 @@
     unbind C-b
     # extend scrollback
     set-option -g history-limit 5000
-    # vim-like pane resizing
-    bind -r C-k resize-pane -U
-    bind -r C-j resize-pane -D
-    bind -r C-h resize-pane -L
-    bind -r C-l resize-pane -R
-    # vim-like pane switching
-    bind -r k select-pane -U
-    bind -r j select-pane -D
-    bind -r h select-pane -L
-    bind -r l select-pane -R
+
+    set -g mode-keys emacs
+    set -g status-keys emacs
+    # emacs-like pane resizing
+    bind -r M-p resize-pane -U
+    bind -r M-n resize-pane -D
+    bind -r M-f resize-pane -L
+    bind -r M-b resize-pane -R
+    # emacs-like pane switching
+    bind -r C-p select-pane -U
+    bind -r C-n select-pane -D
+    bind -r C-f select-pane -L
+    bind -r C-b select-pane -R
     # styling
     set -g status-style fg=white,bg=default
     set -g status-left ""

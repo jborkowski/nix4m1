@@ -43,11 +43,6 @@
       flake = false;
     };
 
-    doom-emacs = {
-      url = "github:hlissner/doom-emacs/develop";
-      flake = false;
-    };
-
     alacritty-src = {
       url = "github:zenixls2/alacritty/ligature";
       flake = false;
@@ -70,8 +65,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, darwin, home-manager, nur, neovim, emacs-src
-    , doom-emacs, yabai-src, kmonad, ... }:
+  outputs = { self, nixpkgs, darwin, home-manager, nur, neovim, emacs-src, yabai-src, kmonad, ... }:
     let
       system = "aarch64-darwin";
 
@@ -88,7 +82,6 @@
             neovim.overlay
             kmonad.overlay
             (final: prev: {
-              doomEmacsRevision = doom-emacs.rev;
               emacs = (prev.emacs.override {
                 srcRepo = true;
                 nativeComp = true;
